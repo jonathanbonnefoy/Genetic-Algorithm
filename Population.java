@@ -10,7 +10,6 @@ public class Population {
 			this.population.add(new Individu());
 		}
 	}
-	// test 
 	public ArrayList<Individu> selectionParRang() {
 		ArrayList<Individu> parentsRestants = new ArrayList<Individu>();
 		this.triABulles();
