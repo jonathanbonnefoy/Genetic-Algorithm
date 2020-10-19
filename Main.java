@@ -7,7 +7,7 @@ public class Main {
 		Population p = new Population();
 		Individu i = new Individu();
 		System.out.println(i.getGraphe());
-		System.out.println(p.selection());
+		//System.out.println(p.selection());
 		System.out.println(p);
 		p.triABulles();
 		System.out.println(p);

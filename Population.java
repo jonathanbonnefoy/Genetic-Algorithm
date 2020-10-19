@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Population {
 	
@@ -21,6 +22,19 @@ public class Population {
 	
 	public ArrayList<Individu> selectionParRoulette() {
 		ArrayList<Individu> parentsRestants = new ArrayList<Individu>();
+		Random r = new Random();
+		
+		double[] proba = null;
+		proba[0] = this.chanceSelection(this.population.get(0));
+		for (int i = 1 ; i < NB_INDIVIDU ; i++) {
+			proba[i] = this.chanceSelection(this.population.get(i)) + proba[i-1];	
+		}
+		
+		for (int j = 0 ; j < NB_INDIVIDU ; j++) {
+			double individuSelect = r.nextDouble();
+			
+		}
+		
 		
 		return parentsRestants;
 	}
@@ -52,11 +66,25 @@ public class Population {
 		ArrayList<Individu> nouvellePopulation = new ArrayList<Individu>();
 	
 	}
+	
+	public double chanceSelection(Individu individu) {
+		double total = 0;
+		for (Individu i : this.population) {
+			total += i.getScore();
+		}
+		double frequenceIndividu = 0;
+		double totalFrequence = 0;
+		for (Individu j : this.population) {
+			frequenceIndividu = total / j.getScore();
+			totalFrequence += frequenceIndividu;
+		}
+		return (total / individu.getScore())/totalFrequence;
+	}
     
 	public String toString() {
 		String s = "Population : \n";
 		for (Individu i : this.population) {
-			s += i.toString() + "\n";
+			s += i.toString() +i.getScore() + " | " + this.chanceSelection(i) + "\n";
 		}
 		return s;
 	}
