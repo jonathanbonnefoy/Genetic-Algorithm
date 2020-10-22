@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Population {
 	
@@ -49,9 +50,14 @@ public class Population {
 		return somme/NB_INDIVIDU;
 	}
 	
-	public void croisement() {
+	public void croisement(Individu P1, Individu P2) {
 		ArrayList<Individu> nouvellePopulation = new ArrayList<Individu>();
-	
+		Random r = new Random();
+		int pointDecoupe1 = r.nextInt();
+		int pointDecoupe2 = r.nextInt();
+		while (pointDecoupe1 == pointDecoupe2) {
+			pointDecoupe2 = r.nextInt();
+		}
 	}
     
 	public String toString() {
