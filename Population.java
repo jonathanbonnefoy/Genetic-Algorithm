@@ -97,8 +97,6 @@ public class Population {
 		// creation des enfants F1 et F2
 		Individu F1 = P1;
 		Individu F2 = P2;
-		LinkedList<Integer> villesF1 = F1.getVilles();
-		LinkedList<Integer> villesF2 = F2.getVilles();
 		LinkedList<Integer> villesNonPlaceesF1 = new LinkedList<>();
 		LinkedList<Integer> villesNonPlaceesF2 = new LinkedList<>();
 
@@ -110,38 +108,56 @@ public class Population {
 					&& ((P1.getVilles().indexOf(villeCouranteF2) < pointDecoupe1)
 					|| (P1.getVilles().indexOf(villeCouranteF2)) > pointDecoupe2)) {
 				villesNonPlaceesF1.add(villeCouranteF1);
-				villesF1.set(P1.getVilles().indexOf(villeCouranteF2), -1);
+				F1.getVilles().set(P1.getVilles().indexOf(villeCouranteF2), -1);
 			}
 			if (P2.getVilles().contains(villeCouranteF1)
 					&& ((P2.getVilles().indexOf(villeCouranteF1) < pointDecoupe1)
 					|| (P2.getVilles().indexOf(villeCouranteF1)) > pointDecoupe2)){
 				villesNonPlaceesF2.add(villeCouranteF2);
-				villesF2.set(P2.getVilles().indexOf(villeCouranteF1), -1);
+				F2.getVilles().set(P2.getVilles().indexOf(villeCouranteF1), -1);
 			}
 
-			villesF1.set(i, villeCouranteF2); //si l'echange ne fonctionne pas, pb= villesF1 et villesF2
-			villesF2.set(i, villeCouranteF1);
+			F1.getVilles().set(i, villeCouranteF2);
+			F2.getVilles().set(i, villeCouranteF1);
 		}
 		System.out.println(villesNonPlaceesF1);
 		System.out.println(villesNonPlaceesF2);	
 		
-			for (int i = 0 ; i < villesF1.size() ; i ++) {
+		/**for (int i = 0 ; i < F1.getVilles().size() ; i ++) {
 			if (i == pointDecoupe1) {
 				i = pointDecoupe2;
 			}
-			if (villesF1.get(i) == -1) {
+			if (F1.getVilles().get(i) == -1) {
 				int indexAleatoire = r.nextInt(villesNonPlaceesF1.size());
-				villesF1.set(i, villesNonPlaceesF1.get(indexAleatoire));
+				F1.getVilles().set(i, villesNonPlaceesF1.get(indexAleatoire));
 				villesNonPlaceesF1.remove(indexAleatoire);
 			}
-			if (villesF2.get(i) == -1) {
+			if (F2.getVilles().get(i) == -1) {
 				int indexAleatoire = r.nextInt(villesNonPlaceesF2.size());
-				villesF2.set(i, villesNonPlaceesF2.get(indexAleatoire));
+				F2.getVilles().set(i, villesNonPlaceesF2.get(indexAleatoire));
 				villesNonPlaceesF2.remove(indexAleatoire);
 			}
-		}
+		}**/
+		
+		this.gererVillesNonPlacees(F1, villesNonPlaceesF1, pointDecoupe1, pointDecoupe2);
+		this.gererVillesNonPlacees(F2, villesNonPlaceesF2, pointDecoupe1, pointDecoupe2);
+		
 		population.add(F1);
 		population.add(F2);
+	}
+	
+	public void gererVillesNonPlacees(Individu ind, LinkedList<Integer> l, int pointDecoupe1, int pointDecoupe2) {
+		Random r = new Random();
+		for (int i = 0 ; i < ind.getVilles().size() ; i ++) {
+			if (i == pointDecoupe1) {
+				i = pointDecoupe2;
+			}
+			if (ind.getVilles().get(i) == -1) {
+				int indexAleatoire = r.nextInt(l.size());
+				ind.getVilles().set(i, l.get(indexAleatoire));
+				l.remove(indexAleatoire);
+			}
+		}
 	}
 	
 	public double chanceSelection(Individu individu) {

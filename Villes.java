@@ -7,7 +7,7 @@ public class Villes {
 	
 	public Villes(int nombreVilles) {
 		villesOrigine = new LinkedList<Integer>();
-		for (int i = 0 ; i < nbVilles ; i ++) {
+		for (int i = 0 ; i < nombreVilles ; i ++) {
 			villesOrigine.add(i);
 		}
 		nbVilles = nombreVilles;

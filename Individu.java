@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class Individu {
 	
-	private LinkedList<Integer> villes;
+	private LinkedList<Integer> villes = new LinkedList<>();
 	private double score;
 	private Graphe graphe;
 	
@@ -34,11 +34,11 @@ public class Individu {
 	
 	public double fonctionEvaluation() {
 		double somme = 0;
-		for (int i = 0 ; i < Villes.nbVilles ; i ++) {		
+		for (int i = 0 ; i < Villes.nbVilles ; i ++) {	
 			if (this.villes.get(i) == this.villes.getLast()) {
-				somme += graphe.getDistance(this.villes.get(i),this.villes.get(i+1));
-			} else {
 				somme += graphe.getDistance(this.villes.get(i),this.villes.getFirst());
+			} else {
+				somme += graphe.getDistance(this.villes.get(i),this.villes.get(i+1));
 			}
 		}
 		return somme;

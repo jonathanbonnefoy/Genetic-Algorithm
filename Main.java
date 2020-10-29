@@ -5,9 +5,10 @@ public class Main {
 		
 		Villes v = new Villes(5);
 		Population p = new Population();
-		Individu i = new Individu();
+
 		//System.out.println(i.getGraphe());
-		//System.out.println(p);
+		System.out.println(p.getPopulation().get(1).getGraphe());
+		System.out.println(p);
 		//p.triABulles();
 		//System.out.println(p);
 		
