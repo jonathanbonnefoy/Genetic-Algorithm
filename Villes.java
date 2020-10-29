@@ -1,12 +1,12 @@
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Villes {
 	
-	public static ArrayList<Integer> villesOrigine;
+	public static LinkedList<Integer> villesOrigine;
 	public static int nbVilles;
 	
 	public Villes(int nombreVilles) {
-		villesOrigine = new ArrayList<Integer>();
+		villesOrigine = new LinkedList<Integer>();
 		for (int i = 0 ; i < nbVilles ; i ++) {
 			villesOrigine.add(i);
 		}

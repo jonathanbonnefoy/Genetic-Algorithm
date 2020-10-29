@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
 
 public class Population {
@@ -11,7 +12,6 @@ public class Population {
 			this.population.add(new Individu());
 		}
 	}
-	// test 
 	public ArrayList<Individu> selectionParRang() {
 		ArrayList<Individu> parentsRestants = new ArrayList<Individu>();
 		this.triABulles();
@@ -22,10 +22,46 @@ public class Population {
 	}
 	
 	public ArrayList<Individu> selectionParRoulette() {
-		ArrayList<Individu> parentsRestants = new ArrayList<Individu>();
-		
-		return parentsRestants;
-	}
+        ArrayList<Individu> parentsRestants = new ArrayList<Individu>();
+        Random r = new Random();
+        
+        double[] proba = new double[NB_INDIVIDU];
+        proba[0] = this.chanceSelection(this.population.get(0));
+        for (int i = 1 ; i < NB_INDIVIDU ; i++) {
+            proba[i] = this.chanceSelection(this.population.get(i)) + proba[i-1];
+        }
+        
+        for (int j = 0 ; j < 4 ; j++) {
+            double individuSelect = r.nextDouble();
+            //System.out.println(individuSelect);
+            int curseur = 0;
+            while (individuSelect > proba[curseur]) {
+                curseur++;
+            }
+            boolean dejaSelect = true;
+            while (dejaSelect) {
+                //System.out.println(dejaSelect);
+                //System.out.println(individuSelect);
+                dejaSelect = false;
+                //System.out.println(dejaSelect);
+                curseur = 0;
+                while (individuSelect > proba[curseur]) {
+                    curseur++;
+                }
+                for (Individu i : parentsRestants) {
+                    if (this.population.get(curseur) == i) {
+                        //System.out.println("individu deja select");
+                        individuSelect = r.nextDouble();
+                        //System.out.println(individuSelect);
+                        dejaSelect = true;
+                    }
+                }
+                //System.out.println(dejaSelect + " deuxieme vérif");
+            }
+            parentsRestants.add(this.population.get(curseur));
+        }
+        return parentsRestants;
+    }
 	
 	public ArrayList<Individu> triABulles() {
 		Individu tmp = new Individu();
@@ -51,19 +87,85 @@ public class Population {
 	}
 	
 	public void croisement(Individu P1, Individu P2) {
-		ArrayList<Individu> nouvellePopulation = new ArrayList<Individu>();
 		Random r = new Random();
-		int pointDecoupe1 = r.nextInt();
-		int pointDecoupe2 = r.nextInt();
-		while (pointDecoupe1 == pointDecoupe2) {
-			pointDecoupe2 = r.nextInt();
+		int pointDecoupe1 = r.nextInt(Villes.nbVilles-3) + 1; // entre 1 et nbVilles-1
+		int pointDecoupe2 = r.nextInt(Villes.nbVilles-2) + 1;
+		while (pointDecoupe1 >= pointDecoupe2 ) {
+			pointDecoupe2 = r.nextInt(Villes.nbVilles-2) + 1;
 		}
+		
+		// creation des enfants F1 et F2
+		Individu F1 = P1;
+		Individu F2 = P2;
+		LinkedList<Integer> villesF1 = F1.getVilles();
+		LinkedList<Integer> villesF2 = F2.getVilles();
+		LinkedList<Integer> villesNonPlaceesF1 = new LinkedList<>();
+		LinkedList<Integer> villesNonPlaceesF2 = new LinkedList<>();
+
+		System.out.println("pDécoupe1 : " + pointDecoupe1 + " pDécoupe2 : " + pointDecoupe2);
+		for (int i = pointDecoupe1 ; i <= pointDecoupe2 ; i++) {
+			int villeCouranteF1 = F1.getVilles().get(i); 
+			int villeCouranteF2 = F2.getVilles().get(i); 
+			if (P1.getVilles().contains(villeCouranteF2) 
+					&& ((P1.getVilles().indexOf(villeCouranteF2) < pointDecoupe1)
+					|| (P1.getVilles().indexOf(villeCouranteF2)) > pointDecoupe2)) {
+				villesNonPlaceesF1.add(villeCouranteF1);
+				villesF1.set(P1.getVilles().indexOf(villeCouranteF2), -1);
+			}
+			if (P2.getVilles().contains(villeCouranteF1)
+					&& ((P2.getVilles().indexOf(villeCouranteF1) < pointDecoupe1)
+					|| (P2.getVilles().indexOf(villeCouranteF1)) > pointDecoupe2)){
+				villesNonPlaceesF2.add(villeCouranteF2);
+				villesF2.set(P2.getVilles().indexOf(villeCouranteF1), -1);
+			}
+
+			villesF1.set(i, villeCouranteF2); //si l'echange ne fonctionne pas, pb= villesF1 et villesF2
+			villesF2.set(i, villeCouranteF1);
+		}
+		System.out.println(villesNonPlaceesF1);
+		System.out.println(villesNonPlaceesF2);	
+		
+			for (int i = 0 ; i < villesF1.size() ; i ++) {
+			if (i == pointDecoupe1) {
+				i = pointDecoupe2;
+			}
+			if (villesF1.get(i) == -1) {
+				int indexAleatoire = r.nextInt(villesNonPlaceesF1.size());
+				villesF1.set(i, villesNonPlaceesF1.get(indexAleatoire));
+				villesNonPlaceesF1.remove(indexAleatoire);
+			}
+			if (villesF2.get(i) == -1) {
+				int indexAleatoire = r.nextInt(villesNonPlaceesF2.size());
+				villesF2.set(i, villesNonPlaceesF2.get(indexAleatoire));
+				villesNonPlaceesF2.remove(indexAleatoire);
+			}
+		}
+		population.add(F1);
+		population.add(F2);
 	}
-    
+	
+	public double chanceSelection(Individu individu) {
+		double total = 0;
+		for (Individu i : this.population) {
+			total += i.getScore();
+		}
+		double frequenceIndividu = 0;
+		double totalFrequence = 0;
+		for (Individu j : this.population) {
+			frequenceIndividu = total / j.getScore();
+			totalFrequence += frequenceIndividu;
+		}
+		return (total / individu.getScore())/totalFrequence;
+	}
+	
+	public ArrayList<Individu> getPopulation() {
+		return this.population;
+	}
+	
 	public String toString() {
 		String s = "Population : \n";
 		for (Individu i : this.population) {
-			s += i.toString() + "\n";
+			s += i.toString() +i.getScore() + " | " + this.chanceSelection(i) + "\n";
 		}
 		return s;
 	}

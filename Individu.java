@@ -1,8 +1,10 @@
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.Random;
 
 public class Individu {
 	
-	private ListeCirculaire<Integer> villes;
+	private LinkedList<Integer> villes;
 	private double score;
 	private Graphe graphe;
 	
@@ -19,19 +21,10 @@ public class Individu {
 	/**
 	 * Melange les villes presentes dans la liste villes
 	 */
-	public ListeCirculaire<Integer> melangerVilles() {
-		Random r = new Random();
-		ListeCirculaire<Integer> chemin = new ListeCirculaire<Integer>();
-		
-        while (chemin.size() < Villes.nbVilles) {
-        	int place = r.nextInt(Villes.nbVilles);
-        	while(chemin.rechercherOccurences(place)) {
-        		place = r.nextInt(Villes.nbVilles);	
-        	}
-        	chemin.ajouter(place);
-        }
-        chemin.setCompteur(0);
-        return chemin;
+	public LinkedList<Integer> melangerVilles() {
+		LinkedList<Integer> chemin = Villes.villesOrigine;
+        Collections.shuffle(chemin);
+        return chemin;    
 	}
 	
 	/**
@@ -42,16 +35,11 @@ public class Individu {
 	public double fonctionEvaluation() {
 		double somme = 0;
 		for (int i = 0 ; i < Villes.nbVilles ; i ++) {		
-			try {
-				if (this.villes.suivant() != this.villes.premier()) {
-					somme += graphe.getDistance(this.villes.getElement(i),this.villes.suivant());
-				} else {
-					somme += graphe.getDistance(this.villes.getElement(i),this.villes.getElement(0));
-				}
-			} catch (ListeVide e) {
-				e.printStackTrace();
+			if (this.villes.get(i) == this.villes.getLast()) {
+				somme += graphe.getDistance(this.villes.get(i),this.villes.get(i+1));
+			} else {
+				somme += graphe.getDistance(this.villes.get(i),this.villes.getFirst());
 			}
-			this.villes.avancerCompteur();
 		}
 		return somme;
 	}
@@ -66,10 +54,7 @@ public class Individu {
         while (y == x) {
         	y = r.nextInt(Villes.nbVilles);
         }
-        
-        int tmp = this.villes.getElement(x);
-        this.villes.changerElement(this.villes.getElement(y), x);
-        this.villes.changerElement(tmp, y);
+        Collections.swap(this.villes, x, y);
     }
 	
 	/**
@@ -86,6 +71,10 @@ public class Individu {
 
 	public double getScore() {
 		return this.score;
+	}
+
+	public LinkedList<Integer> getVilles() {
+		return this.villes;
 	}
 	
 }
