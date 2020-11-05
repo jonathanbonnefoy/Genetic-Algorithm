@@ -4,28 +4,20 @@ import java.util.Random;
 
 public class Individu {
 	
-	private LinkedList<Integer> villes = new LinkedList<>();
+	private LinkedList<Integer> villes;
 	private double score;
-	private Graphe graphe;
+	public static Graphe graphe = Graphe.getInstance();
 	
 	/**
 	 * Instancie un Individu en melangeant la liste des villes 
 	 * ordonnees puis evalue son score de fitness
 	 */
 	public Individu() {
-		this.villes = melangerVilles();
-		this.graphe = Graphe.getInstance();
+		this.villes = new LinkedList<>(Villes.villesOrigine);
+		Collections.shuffle(this.villes);
 		this.score = this.fonctionEvaluation();
 	}
 
-	/**
-	 * Melange les villes presentes dans la liste villes
-	 */
-	public LinkedList<Integer> melangerVilles() {
-		LinkedList<Integer> chemin = Villes.villesOrigine;
-        Collections.shuffle(chemin);
-        return chemin;    
-	}
 	
 	/**
 	 * evalue le score de fitness du chemin 
@@ -44,7 +36,7 @@ public class Individu {
 		return somme;
 	}
 	
-    /**
+    /* 
      * échange deux villes aléatoires de l'individu
      */
     public void mutation() {
@@ -63,10 +55,6 @@ public class Individu {
 	@Override
 	public String toString() {
 		return "" + this.villes.toString();
-	}
-
-	public Graphe getGraphe() {
-		return this.graphe;
 	}
 
 	public double getScore() {

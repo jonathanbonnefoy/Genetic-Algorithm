@@ -12,6 +12,7 @@ public class Population {
 			this.population.add(new Individu());
 		}
 	}
+	
 	public ArrayList<Individu> selectionParRang() {
 		ArrayList<Individu> parentsRestants = new ArrayList<Individu>();
 		this.triABulles();
@@ -123,7 +124,7 @@ public class Population {
 		System.out.println(villesNonPlaceesF1);
 		System.out.println(villesNonPlaceesF2);	
 		
-		/**for (int i = 0 ; i < F1.getVilles().size() ; i ++) {
+		for (int i = 0 ; i < F1.getVilles().size() ; i ++) {
 			if (i == pointDecoupe1) {
 				i = pointDecoupe2;
 			}
@@ -137,7 +138,7 @@ public class Population {
 				F2.getVilles().set(i, villesNonPlaceesF2.get(indexAleatoire));
 				villesNonPlaceesF2.remove(indexAleatoire);
 			}
-		}**/
+		}
 		
 		this.gererVillesNonPlacees(F1, villesNonPlaceesF1, pointDecoupe1, pointDecoupe2);
 		this.gererVillesNonPlacees(F2, villesNonPlaceesF2, pointDecoupe1, pointDecoupe2);
@@ -181,9 +182,8 @@ public class Population {
 	public String toString() {
 		String s = "Population : \n";
 		for (Individu i : this.population) {
-			s += i.toString() +i.getScore() + " | " + this.chanceSelection(i) + "\n";
+			s += i.toString() + " " + i.getScore() + " | " + this.chanceSelection(i) + "\n";
 		}
 		return s;
-	}
-	
+	} 	
 }
