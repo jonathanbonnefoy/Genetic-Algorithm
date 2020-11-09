@@ -98,9 +98,7 @@ public class Population {
 		// creation des enfants F1 et F2
 		Individu F1 = P1;
 		Individu F2 = P2;
-		LinkedList<Integer> villesNonPlaceesF1 = new LinkedList<>();
-		LinkedList<Integer> villesNonPlaceesF2 = new LinkedList<>();
-
+		
 		System.out.println("pDécoupe1 : " + pointDecoupe1 + " pDécoupe2 : " + pointDecoupe2);
 		for (int i = pointDecoupe1 ; i <= pointDecoupe2 ; i++) {
 			int villeCouranteF1 = F1.getVilles().get(i); 
@@ -108,38 +106,33 @@ public class Population {
 			if (P1.getVilles().contains(villeCouranteF2) 
 					&& ((P1.getVilles().indexOf(villeCouranteF2) < pointDecoupe1)
 					|| (P1.getVilles().indexOf(villeCouranteF2)) > pointDecoupe2)) {
-				villesNonPlaceesF1.add(villeCouranteF1);
 				F1.getVilles().set(P1.getVilles().indexOf(villeCouranteF2), -1);
 			}
 			if (P2.getVilles().contains(villeCouranteF1)
 					&& ((P2.getVilles().indexOf(villeCouranteF1) < pointDecoupe1)
-					|| (P2.getVilles().indexOf(villeCouranteF1)) > pointDecoupe2)){
-				villesNonPlaceesF2.add(villeCouranteF2);
+					|| (P2.getVilles().indexOf(villeCouranteF1)) > pointDecoupe2)) {
 				F2.getVilles().set(P2.getVilles().indexOf(villeCouranteF1), -1);
 			}
 
 			F1.getVilles().set(i, villeCouranteF2);
 			F2.getVilles().set(i, villeCouranteF1);
 		}
-		System.out.println(villesNonPlaceesF1);
-		System.out.println(villesNonPlaceesF2);	
-		
-		for (int i = 0 ; i < F1.getVilles().size() ; i ++) {
-			if (i == pointDecoupe1) {
-				i = pointDecoupe2;
+		// recherche des villes manquantes 
+		LinkedList<Integer> villesNonPlaceesF1 = new LinkedList<>();
+		LinkedList<Integer> villesNonPlaceesF2 = new LinkedList<>();
+
+		for (int i = 0 ; i < Villes.nbVilles ; i++) {
+			if (!F1.getVilles().contains(i)) {
+				villesNonPlaceesF1.add(i);
 			}
-			if (F1.getVilles().get(i) == -1) {
-				int indexAleatoire = r.nextInt(villesNonPlaceesF1.size());
-				F1.getVilles().set(i, villesNonPlaceesF1.get(indexAleatoire));
-				villesNonPlaceesF1.remove(indexAleatoire);
-			}
-			if (F2.getVilles().get(i) == -1) {
-				int indexAleatoire = r.nextInt(villesNonPlaceesF2.size());
-				F2.getVilles().set(i, villesNonPlaceesF2.get(indexAleatoire));
-				villesNonPlaceesF2.remove(indexAleatoire);
+			if (!F2.getVilles().contains(i)) {
+				villesNonPlaceesF2.add(i);
 			}
 		}
 		
+		System.out.println(villesNonPlaceesF1);
+		System.out.println(villesNonPlaceesF2);	
+
 		this.gererVillesNonPlacees(F1, villesNonPlaceesF1, pointDecoupe1, pointDecoupe2);
 		this.gererVillesNonPlacees(F2, villesNonPlaceesF2, pointDecoupe1, pointDecoupe2);
 		
