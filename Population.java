@@ -122,12 +122,10 @@ public class Population {
 		LinkedList<Integer> villesNonPlaceesF2 = new LinkedList<>();
 
 		for (int i = 0 ; i < Villes.nbVilles ; i++) {
-			if (!F1.getVilles().contains(i)) {
+			if (!F1.getVilles().contains(i))
 				villesNonPlaceesF1.add(i);
-			}
-			if (!F2.getVilles().contains(i)) {
+			if (!F2.getVilles().contains(i))
 				villesNonPlaceesF2.add(i);
-			}
 		}
 		
 		System.out.println(villesNonPlaceesF1);
@@ -171,6 +169,28 @@ public class Population {
 	public ArrayList<Individu> getPopulation() {
 		return this.population;
 	}
+	
+	public Individu selectionParRouletteIndividuel() {
+        Individu parentRestant;
+        Random r = new Random();
+
+        double[] proba = new double[this.population.size()];
+        proba[0] = this.chanceSelection(this.population.get(0));
+        for (int i = 1 ; i < this.population.size() ; i++) {
+            proba[i] = this.chanceSelection(this.population.get(i)) + proba[i-1];
+            //System.out.println(proba[i]);
+        }
+
+        double individuSelect = r.nextDouble();
+        //System.out.println(individuSelect +" : proba de l'individu");
+        int curseur = 0;
+        while (individuSelect > proba[curseur]) {
+            //System.out.println(proba[curseur]+" proba dans le tableau");
+            curseur++;
+        }
+        parentRestant = this.population.get(curseur);
+        return parentRestant;
+    }
 	
 	public String toString() {
 		String s = "Population : \n";
