@@ -22,17 +22,17 @@ public class Population {
 		return parentsRestants;
 	}
 	
-	public ArrayList<Individu> selectionParRoulette() {
+	public ArrayList<Individu> selectionParRoulette(int nbrRestants) {
         ArrayList<Individu> parentsRestants = new ArrayList<Individu>();
         Random r = new Random();
-        
+
         double[] proba = new double[NB_INDIVIDU];
         proba[0] = this.chanceSelection(this.population.get(0));
         for (int i = 1 ; i < NB_INDIVIDU ; i++) {
             proba[i] = this.chanceSelection(this.population.get(i)) + proba[i-1];
         }
-        
-        for (int j = 0 ; j < 4 ; j++) {
+
+        for (int j = 0 ; j < nbrRestants ; j++) {
             double individuSelect = r.nextDouble();
             //System.out.println(individuSelect);
             int curseur = 0;
@@ -57,12 +57,13 @@ public class Population {
                         dejaSelect = true;
                     }
                 }
-                //System.out.println(dejaSelect + " deuxieme vérif");
+                //System.out.println(dejaSelect + " deuxieme vÃ©rif");
             }
             parentsRestants.add(this.population.get(curseur));
         }
         return parentsRestants;
     }
+
 	
 	public ArrayList<Individu> triABulles() {
 		Individu tmp = new Individu();
@@ -87,7 +88,8 @@ public class Population {
 		return somme/NB_INDIVIDU;
 	}
 	
-	public void croisement(Individu P1, Individu P2) {
+	public LinkedList<Individu> croisement(Individu P1, Individu P2) {
+		LinkedList<Individu> progeniture = new LinkedList<>();
 		Random r = new Random();
 		int pointDecoupe1 = r.nextInt(Villes.nbVilles-3) + 1; // entre 1 et nbVilles-1
 		int pointDecoupe2 = r.nextInt(Villes.nbVilles-2) + 1;
@@ -120,7 +122,6 @@ public class Population {
 		// recherche des villes manquantes 
 		LinkedList<Integer> villesNonPlaceesF1 = new LinkedList<>();
 		LinkedList<Integer> villesNonPlaceesF2 = new LinkedList<>();
-
 		for (int i = 0 ; i < Villes.nbVilles ; i++) {
 			if (!F1.getVilles().contains(i))
 				villesNonPlaceesF1.add(i);
@@ -134,8 +135,10 @@ public class Population {
 		this.gererVillesNonPlacees(F1, villesNonPlaceesF1, pointDecoupe1, pointDecoupe2);
 		this.gererVillesNonPlacees(F2, villesNonPlaceesF2, pointDecoupe1, pointDecoupe2);
 		
-		population.add(F1);
-		population.add(F2);
+		progeniture.add(F1);
+		progeniture.add(F2);
+		
+		return progeniture;
 	}
 	
 	public void gererVillesNonPlacees(Individu ind, LinkedList<Integer> l, int pointDecoupe1, int pointDecoupe2) {
@@ -170,27 +173,9 @@ public class Population {
 		return this.population;
 	}
 	
-	public Individu selectionParRouletteIndividuel() {
-        Individu parentRestant;
-        Random r = new Random();
-
-        double[] proba = new double[this.population.size()];
-        proba[0] = this.chanceSelection(this.population.get(0));
-        for (int i = 1 ; i < this.population.size() ; i++) {
-            proba[i] = this.chanceSelection(this.population.get(i)) + proba[i-1];
-            //System.out.println(proba[i]);
-        }
-
-        double individuSelect = r.nextDouble();
-        //System.out.println(individuSelect +" : proba de l'individu");
-        int curseur = 0;
-        while (individuSelect > proba[curseur]) {
-            //System.out.println(proba[curseur]+" proba dans le tableau");
-            curseur++;
-        }
-        parentRestant = this.population.get(curseur);
-        return parentRestant;
-    }
+	public void setPopulation(ArrayList<Individu> population) {
+		this.population = population;
+	}
 	
 	public String toString() {
 		String s = "Population : \n";
