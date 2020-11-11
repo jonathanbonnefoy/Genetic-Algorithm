@@ -26,9 +26,9 @@ public class Population {
         ArrayList<Individu> parentsRestants = new ArrayList<Individu>();
         Random r = new Random();
 
-        double[] proba = new double[NB_INDIVIDU];
+        double[] proba = new double[this.population.size()];
         proba[0] = this.chanceSelection(this.population.get(0));
-        for (int i = 1 ; i < NB_INDIVIDU ; i++) {
+        for (int i = 1 ; i < this.population.size() ; i++) {
             proba[i] = this.chanceSelection(this.population.get(i)) + proba[i-1];
         }
 
@@ -82,7 +82,6 @@ public class Population {
 	public double moyenneFitness() {
 		double somme = 0;
 		for (Individu i : this.population) {
-			System.out.println(i.getScore());
 			somme += i.fonctionEvaluation();
 		}
 		return somme/NB_INDIVIDU;
@@ -101,7 +100,7 @@ public class Population {
 		Individu F1 = P1;
 		Individu F2 = P2;
 		
-		System.out.println("pDécoupe1 : " + pointDecoupe1 + " pDécoupe2 : " + pointDecoupe2);
+		//System.out.println("pDécoupe1 : " + pointDecoupe1 + " pDécoupe2 : " + pointDecoupe2);
 		for (int i = pointDecoupe1 ; i <= pointDecoupe2 ; i++) {
 			int villeCouranteF1 = F1.getVilles().get(i); 
 			int villeCouranteF2 = F2.getVilles().get(i); 
@@ -128,10 +127,6 @@ public class Population {
 			if (!F2.getVilles().contains(i))
 				villesNonPlaceesF2.add(i);
 		}
-		
-		System.out.println(villesNonPlaceesF1);
-		System.out.println(villesNonPlaceesF2);	
-
 		this.gererVillesNonPlacees(F1, villesNonPlaceesF1, pointDecoupe1, pointDecoupe2);
 		this.gererVillesNonPlacees(F2, villesNonPlaceesF2, pointDecoupe1, pointDecoupe2);
 		
@@ -178,7 +173,7 @@ public class Population {
 	}
 	
 	public String toString() {
-		String s = "Population : \n";
+		String s = "";
 		for (Individu i : this.population) {
 			s += i.toString() + " " + i.getScore() + " | " + this.chanceSelection(i) + "\n";
 		}
