@@ -4,11 +4,10 @@ import java.util.Random;
 
 public class Population {
 	
-	public static final int NB_INDIVIDU = 8;
 	private ArrayList<Individu> population = new ArrayList<Individu>();
 	
 	public Population() {
-		for (int i = 0 ; i < NB_INDIVIDU ; i ++) {
+		for (int i = 0 ; i < Villes.nbVilles ; i ++) {
 			this.population.add(new Individu());
 		}
 	}
@@ -16,7 +15,7 @@ public class Population {
 	public ArrayList<Individu> selectionParRang() {
 		ArrayList<Individu> parentsRestants = new ArrayList<Individu>();
 		this.triABulles();
-		for (int i = 0 ; i < NB_INDIVIDU/2 ; i++) {
+		for (int i = 0 ; i < Villes.nbVilles/2 ; i++) {
 			parentsRestants.add(this.population.get(i));
 		}
 		return parentsRestants;
@@ -67,8 +66,8 @@ public class Population {
 	
 	public ArrayList<Individu> triABulles() {
 		Individu tmp = new Individu();
-		for (int i = 0 ; i < NB_INDIVIDU ; i++) {
-			for (int j = 0 ; j < NB_INDIVIDU ; j++) {
+		for (int i = 0 ; i < Villes.nbVilles ; i++) {
+			for (int j = 0 ; j < Villes.nbVilles ; j++) {
 				if (this.population.get(j).getScore() > this.population.get(i).getScore()) {
 					tmp = this.population.get(i);
 					this.population.set(i, this.population.get(j));
@@ -84,7 +83,7 @@ public class Population {
 		for (Individu i : this.population) {
 			somme += i.fonctionEvaluation();
 		}
-		return somme/NB_INDIVIDU;
+		return somme/Villes.nbVilles;
 	}
 	
 	public LinkedList<Individu> croisement(Individu P1, Individu P2) {

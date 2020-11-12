@@ -47,6 +47,8 @@ public class Individu {
         	y = r.nextInt(Villes.nbVilles);
         }
         Collections.swap(this.villes, x, y);
+        this.score = this.fonctionEvaluation();
+        
     }
 	
 	/**
