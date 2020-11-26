@@ -91,57 +91,88 @@ public class Population {
 		Random r = new Random();
 		int pointDecoupe1 = r.nextInt(Villes.nbVilles-3) + 1; // entre 1 et nbVilles-1
 		int pointDecoupe2 = r.nextInt(Villes.nbVilles-2) + 1;
-		while (pointDecoupe1 >= pointDecoupe2 ) {
+		while (pointDecoupe1 >= pointDecoupe2) {
 			pointDecoupe2 = r.nextInt(Villes.nbVilles-2) + 1;
 		}
 		
 		// creation des enfants F1 et F2
-		Individu F1 = P1;
-		Individu F2 = P2;
-		
+		Individu F1 = new Individu();
+		F1.getVilles().clear();
+		for (Ville v: P1.getVilles()) {
+			try {
+				F1.getVilles().add((Ville) v.clone());
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+			}
+		}
+		Individu F2 = new Individu();
+		F2.getVilles().clear();
+		for (Ville v: P2.getVilles()) {
+			try {
+				F2.getVilles().add((Ville) v.clone());
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+			}
+		}
+	
+		//System.out.println("P1 : " + P1);
+		//System.out.println("P2 : " + P2);
 		//System.out.println("pDécoupe1 : " + pointDecoupe1 + " pDécoupe2 : " + pointDecoupe2);
 		for (int i = pointDecoupe1 ; i <= pointDecoupe2 ; i++) {
-			int villeCouranteF1 = F1.getVilles().get(i); 
-			int villeCouranteF2 = F2.getVilles().get(i); 
-			if (P1.getVilles().contains(villeCouranteF2) 
-					&& ((P1.getVilles().indexOf(villeCouranteF2) < pointDecoupe1)
-					|| (P1.getVilles().indexOf(villeCouranteF2)) > pointDecoupe2)) {
-				F1.getVilles().set(P1.getVilles().indexOf(villeCouranteF2), -1);
+			Ville villeCouranteF1 = F1.getVilles().get(i); 
+			Ville villeCouranteF2 = F2.getVilles().get(i); 
+			//System.out.println("villeCF2 : " + villeCouranteF2);
+			if (P1.getVilles().indexOf(villeCouranteF2) < pointDecoupe1 || (P1.getVilles().indexOf(villeCouranteF2)) > pointDecoupe2) {
+				//System.out.println("-1 pour F1 à i");
+				F1.getVilles().get(P1.getVilles().indexOf(villeCouranteF2)).setPosX(-1.0);
+				F1.getVilles().get(P1.getVilles().indexOf(villeCouranteF2)).setPosY(-1.0);
+				//System.out.println(F1);
 			}
-			if (P2.getVilles().contains(villeCouranteF1)
-					&& ((P2.getVilles().indexOf(villeCouranteF1) < pointDecoupe1)
-					|| (P2.getVilles().indexOf(villeCouranteF1)) > pointDecoupe2)) {
-				F2.getVilles().set(P2.getVilles().indexOf(villeCouranteF1), -1);
+			//System.out.println("villeCF1 : " + villeCouranteF1);
+			if (P2.getVilles().indexOf(villeCouranteF1) < pointDecoupe1 || (P2.getVilles().indexOf(villeCouranteF1) > pointDecoupe2)) {
+				//System.out.println("-1 pour F2 à i");
+				F2.getVilles().get(P2.getVilles().indexOf(villeCouranteF1)).setPosX(-1.0);
+				F2.getVilles().get(P2.getVilles().indexOf(villeCouranteF1)).setPosY(-1.0);
 			}
-
+			
+			//System.out.println("F1 av switch:" + F1);
+			//System.out.println("F2 av switch:" + F2);
 			F1.getVilles().set(i, villeCouranteF2);
 			F2.getVilles().set(i, villeCouranteF1);
+			//System.out.println("F1 ap switch:" + F1);
+			//System.out.println("F2 ap switch:" + F2);
 		}
 		// recherche des villes manquantes 
-		LinkedList<Integer> villesNonPlaceesF1 = new LinkedList<>();
-		LinkedList<Integer> villesNonPlaceesF2 = new LinkedList<>();
+		LinkedList<Ville> villesNonPlaceesF1 = new LinkedList<>();
+		LinkedList<Ville> villesNonPlaceesF2 = new LinkedList<>();
 		for (int i = 0 ; i < Villes.nbVilles ; i++) {
-			if (!F1.getVilles().contains(i))
-				villesNonPlaceesF1.add(i);
-			if (!F2.getVilles().contains(i))
-				villesNonPlaceesF2.add(i);
+			//System.out.println("av contains " + P1);
+			if (!F1.getVilles().contains(P1.getVilles().get(i)))
+				villesNonPlaceesF1.add(P1.getVilles().get(i));
+			//System.out.println("av contains " + P2);
+			if (!F2.getVilles().contains(P1.getVilles().get(i)))
+				villesNonPlaceesF2.add(P1.getVilles().get(i));
 		}
+		//System.out.println("villenonplaceeF1" + villesNonPlaceesF1);
+		//System.out.println("villenonplaceeF2" + villesNonPlaceesF2);
 		this.gererVillesNonPlacees(F1, villesNonPlaceesF1, pointDecoupe1, pointDecoupe2);
+	    //System.out.println("deuxieme gerervillernonplaceee");
 		this.gererVillesNonPlacees(F2, villesNonPlaceesF2, pointDecoupe1, pointDecoupe2);
-		
+		//System.out.println("gererVillesNonPlaccesF1" + F1);
+		//System.out.println("gererVillesNonPlaccesF2" + F2);
 		progeniture.add(F1);
 		progeniture.add(F2);
 		
 		return progeniture;
 	}
 	
-	public void gererVillesNonPlacees(Individu ind, LinkedList<Integer> l, int pointDecoupe1, int pointDecoupe2) {
+	public void gererVillesNonPlacees(Individu ind, LinkedList<Ville> l, int pointDecoupe1, int pointDecoupe2) {
 		Random r = new Random();
 		for (int i = 0 ; i < ind.getVilles().size() ; i ++) {
 			if (i == pointDecoupe1) {
 				i = pointDecoupe2;
 			}
-			if (ind.getVilles().get(i) == -1) {
+			if (ind.getVilles().get(i).getPosX() == -1.0 && ind.getVilles().get(i).getPosY() == -1.0) {
 				int indexAleatoire = r.nextInt(l.size());
 				ind.getVilles().set(i, l.get(indexAleatoire));
 				l.remove(indexAleatoire);
@@ -163,6 +194,15 @@ public class Population {
 		return (total / individu.getScore())/totalFrequence;
 	}
 	
+	public Individu getMeilleurIndividu() {
+		Individu min = this.getPopulation().get(0);
+		for (int i = 1 ; i < Villes.nbVilles ; i++) {
+			if (min.getScore() > this.getPopulation().get(i).getScore()) {
+				min = this.getPopulation().get(i);
+			}	
+		}
+		return min;
+	}
 	public ArrayList<Individu> getPopulation() {
 		return this.population;
 	}

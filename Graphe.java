@@ -1,28 +1,26 @@
 
-import java.util.Random;
-
 public class Graphe {	
 	
 	private static Graphe graphe;
 	
 	private int ligne, colonne;
-	private int[][] matrice;
+	private double[][] matrice;
 	
+	// instancie la matrice codant la distance entre chacune des villes
 	private Graphe() {
 		this.ligne = Villes.nbVilles;
 		this.colonne = Villes.nbVilles;
-		matrice = new int[ligne][colonne];
+		matrice = new double[ligne][colonne];
 		this.genererGraphe();
 	}
 	
 	public void genererGraphe() {
-		Random distance = new Random();
 		for (int i = 0 ; i < this.ligne ; i++) {
 			for (int j = 0 ; j <= i ; j++) {
 				if (i == j) {
 					matrice[i][j] = 0;
 				} else {
-					int coefficient = distance.nextInt(10)+1;
+					double coefficient = Ville.distanceEntrePoints(Villes.villesOrigine.get(i), Villes.villesOrigine.get(j));
 					matrice[i][j] = coefficient;
 					matrice[j][i] = coefficient;
 				}
@@ -30,11 +28,11 @@ public class Graphe {
 		}
 	}
 	
-	public int[][] getMatrice() {
+	public double[][] getMatrice() {
 		return this.matrice;
 	}
 
-	public int getDistance(int i, int j) {
+	public double getDistance(int i, int j) {
 		return this.matrice[i][j];
 	}
 	

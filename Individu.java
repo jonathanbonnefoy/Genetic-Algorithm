@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class Individu {
 	
-	private LinkedList<Integer> villes;
+	private LinkedList<Ville> villes;
 	private double score;
 	public static Graphe graphe = Graphe.getInstance();
 	
@@ -13,11 +13,18 @@ public class Individu {
 	 * ordonnees puis evalue son score de fitness
 	 */
 	public Individu() {
-		this.villes = new LinkedList<>(Villes.villesOrigine);
+		this.villes = new LinkedList<>();
+		for (Ville v : Villes.villesOrigine) {
+			try {
+				this.villes.add((Ville) v.clone());
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+			}
+		}
 		Collections.shuffle(this.villes);
 		this.score = this.fonctionEvaluation();
 	}
-
+	
 	
 	/**
 	 * evalue le score de fitness du chemin 
@@ -28,9 +35,9 @@ public class Individu {
 		double somme = 0;
 		for (int i = 0 ; i < Villes.nbVilles ; i ++) {	
 			if (this.villes.get(i) == this.villes.getLast()) {
-				somme += graphe.getDistance(this.villes.get(i),this.villes.getFirst());
+				somme += Ville.distanceEntrePoints(this.villes.get(i),this.villes.getFirst());
 			} else {
-				somme += graphe.getDistance(this.villes.get(i),this.villes.get(i+1));
+				somme += Ville.distanceEntrePoints(this.villes.get(i),this.villes.get(i+1));
 			}
 		}
 		return somme;
@@ -63,8 +70,11 @@ public class Individu {
 		return this.score;
 	}
 
-	public LinkedList<Integer> getVilles() {
+	public LinkedList<Ville> getVilles() {
 		return this.villes;
 	}
 	
+	public void setVilles(LinkedList<Ville> villes) {
+		this.villes = new LinkedList<>(villes);
+	}
 }
